@@ -1,0 +1,51 @@
+{
+  "name": "auth-service",
+  "version": "1.0.0",
+  "description": "Auth service of blog-cms project",
+  "main": "index.js",
+  "author": "Umer Kang",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "start": "export NODE_ENV=development && ts-node-dev src/index.ts",
+    "build": "tsc",
+    "start:prod": "export NODE_ENV=production && node dist/index.js",
+    "test": "jest --watch",
+    "test:ci": "jest"
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node",
+    "setupFilesAfterEnv": [
+      "./src/test/setup.ts"
+    ]
+  },
+  "dependencies": {
+    "@blog-cms/common": "^1.0.4",
+    "@types/bcryptjs": "^2.4.2",
+    "@types/compression": "^1.7.2",
+    "@types/cookie-parser": "^1.4.3",
+    "@types/express": "^4.17.13",
+    "@types/jsonwebtoken": "^8.5.9",
+    "bcryptjs": "^2.4.3",
+    "compression": "^1.7.4",
+    "cookie-parser": "^1.4.6",
+    "express": "^4.18.1",
+    "express-async-errors": "^3.1.1",
+    "express-mongo-sanitize": "^2.2.0",
+    "express-validator": "^6.14.2",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^6.5.5",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^4.8.2",
+    "xss-clean": "^0.1.1"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.0.3",
+    "@types/supertest": "^2.0.12",
+    "jest": "^29.1.1",
+    "mongodb-memory-server": "^8.9.1",
+    "supertest": "^6.2.4",
+    "ts-jest": "^29.0.2"
+  }
+}

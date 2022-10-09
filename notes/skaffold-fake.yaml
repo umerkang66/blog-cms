@@ -1,0 +1,70 @@
+apiVersion: skaffold/v2alpha3
+kind: Config
+deploy:
+  # list out all the different config files that we want to load up in the cluster
+  kubectl:
+    manifests:
+      - ./infra/k8s/*
+      - ./infra/k8s-dev/*
+build:
+  local:
+    push: false
+  artifacts:
+    # build the images, if source code changes, (not synced), update the images if (synced) source code changes
+    - image: ugulzar4512/blogcms-auth
+      # folder name of auth service
+      context: auth
+      docker:
+        dockerfile: Dockerfile.dev
+      sync:
+        # how to handle image, if any file changes
+        manual:
+          - src: 'src/**/*.ts'
+            # "dest" means where to sync this file to, inside the running container, just take from where the file was found from, and throw it to the corresponding part inside the running container
+            dest: .
+    - image: ugulzar4512/blogcms-client
+      # folder name of client service
+      context: client
+      docker:
+        dockerfile: Dockerfile.dev
+      sync:
+        # how to handle image, if any file changes
+        manual:
+          - src: '**/*.js'
+            dest: .
+    - image: ugulzar4512/blogcms-tickets
+      # folder name of tickets service
+      context: tickets
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        # how to handle image, if any file changes
+        manual:
+          - src: 'src/**/*.ts'
+            dest: .
+    - image: ugulzar4512/blogcms-orders
+      # folder name of orders service
+      context: orders
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        # how to handle image, if any file changes
+        manual:
+          - src: 'src/**/*.ts'
+            dest: .
+    - image: ugulzar4512/blogcms-expiration
+      context: expiration
+      docker:
+        dockerfile: Dockerfile.dev
+      sync:
+        manual:
+          - src: 'src/**/*.ts'
+            dest: .
+    - image: ugulzar4512/blogcms-payments
+      context: payments
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: 'src/**/*.ts'
+            dest: .

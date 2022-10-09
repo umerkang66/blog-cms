@@ -1,0 +1,81 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-depl
+spec:
+  replicas: 1
+  # find all the pods, that are labeled with "app: auth"
+  selector:
+    matchLabels:
+      app: auth
+  # tell the k8s master, to create the pods with these configuration
+  template:
+    metadata:
+      # define the label so other k8s objects can access it
+      labels:
+        app: auth
+    spec:
+      containers:
+        # name of the container is just for logging purposes
+        - name: auth
+          image: us.gcr.io/development-environment-365009/auth
+          env:
+            # this is going to be the name of variable as it shows up inside of container, so stay consistent
+            - name: JWT_KEY
+              valueFrom:
+                secretKeyRef:
+                  # metadata name of k8s secret
+                  name: jwt-secret
+                  # key inside "jwt-secret"
+                  key: JWT_KEY
+            - name: JWT_EXPIRES_IN
+              value: '30d'
+            - name: JWT_COOKIE_EXPIRES_IN
+              value: '30'
+            - name: MONGO_URI
+              value: 'mongodb://auth-mongo-srv:27017/auth'
+            - name: EMAIL_FROM
+              value: 'ugulzar4512@gmail.com'
+            - name: MAILTRAP_HOST
+              value: 'smtp.mailtrap.io'
+            - name: MAILTRAP_PORT
+              value: '2525'
+            - name: MAILTRAP_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: mailtrap-username
+                  key: MAILTRAP_USERNAME
+            - name: MAILTRAP_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mailtrap-password
+                  key: MAILTRAP_PASSWORD
+            - name: SENDINBLUE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: sendinblue-username
+                  key: SENDINBLUE_USERNAME
+            - name: SENDINBLUE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: sendinblue-password
+                  key: SENDINBLUE_PASSWORD
+---
+# by default this will create clusterIP service, if we didn't specify any type
+apiVersion: v1
+kind: Service
+metadata:
+  name: auth-srv
+spec:
+  # find all the pods that are labeled with "app:auth"
+  selector:
+    app: auth
+  type: ClusterIP
+  ports:
+    # name is just for logging purposes
+    - name: auth
+      protocol: TCP
+      # clusterIP itself has a port, this will through other k8s object will connect
+      port: 3000
+      # clusterIP port will be forwarded to this container port (pod port)
+      targetPort: 3000

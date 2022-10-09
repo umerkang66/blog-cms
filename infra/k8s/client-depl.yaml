@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: client-depl
+spec:
+  replicas: 1
+  selector:
+    # after creating manage all the pods with label "app: client"
+    matchLabels:
+      app: client
+  template:
+    metadata:
+      # create pod labels that will be selected by client-deployment
+      labels:
+        app: client
+    spec:
+      containers:
+        - name: client
+          image: us.gcr.io/development-environment-365009/client
+---
+# by default this will create clusterIP service, if we didn't specify any type
+apiVersion: v1
+kind: Service
+metadata:
+  name: client-srv
+spec:
+  # find all the pods that are labeled with "app:auth"
+  selector:
+    app: client
+  type: ClusterIP
+  ports:
+    # name is just for logging purposes
+    - name: client
+      protocol: TCP
+      # clusterIP itself has a port, this will through other k8s object will connect
+      port: 3000
+      # clusterIP port will be forwarded to this container port (pod port)
+      targetPort: 3000

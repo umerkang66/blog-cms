@@ -1,0 +1,9 @@
+Create token in api tab of digital ocean
+"doctl auth init" then paste in the token
+
+Install a new kubectl context
+doctl kubernetes cluster kubeconfig save <cluster_name>
+
+VIEW AND CHANGE CONTEXTS
+kubectl config view
+kubectl config use-context <context_name> // it should be "name"

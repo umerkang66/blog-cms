@@ -1,0 +1,33 @@
+# INSTALL HELM
+curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
+chmod 700 get_helm.sh
+./get_helm.sh
+
+
+Add the Jetstack Helm repository
+helm repo add jetstack https://charts.jetstack.io
+
+Update your local Helm chart repository cache:
+helm repo update
+
+Install the CRDs:
+kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.8.2/cert-manager.crds.yaml
+
+
+Install the cert-manager Helm chart:
+helm install \
+  cert-manager jetstack/cert-manager \
+  --namespace cert-manager \
+  --create-namespace \
+  --version v1.8.2 \
+  # --set installCRDs=true
+
+
+//////////////////////////////////////
+
+OR BY KUBECTL
+kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.8.2/cert-manager.yaml
+
+K8s cluster will go to LetsEncrypt to ask for certificate.
+If i will sent the request to certain routes on this domain, and get a reply, then i will consider that you owns this domain
+Ok, you checkout, here's a certificate that's good for 90 days
