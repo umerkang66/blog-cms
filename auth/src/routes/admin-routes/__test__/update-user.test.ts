@@ -1,7 +1,7 @@
 import request from 'supertest';
 import { app } from '../../../app';
 
-it('deletes the user', async () => {
+it('updates the user', async () => {
   // create the user: signup
   const body = {
     name: 'first_name',
